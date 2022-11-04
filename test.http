@@ -1,0 +1,7 @@
+# - Api Dopcumentaiton
+
+# Get all items
+GET http://localhost:4000/items
+
+# Get single item
+GET http://localhost:4000/items/1

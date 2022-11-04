@@ -1,7 +1,15 @@
 # - Api Dopcumentaiton
 
 # Get all items
-GET http://localhost:4000/items
+# GET http://localhost:4000/items
 
 # Get single item
-GET http://localhost:4000/items/1
+# GET http://localhost:4000/items/1
+
+# Add item
+POST http://localhost:4000/item
+Content-Type: application/json
+
+{
+  # "name": "Item"
+}

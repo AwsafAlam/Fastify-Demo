@@ -1,24 +1,69 @@
-const items = require('./items')
+const itemRoutes = require('./routes/items')
 const fastify = require('fastify')({ logger: true })
 const PORT = 4000
 
-fastify.get('/items', (req, res) => {
-	res.send(items)
+fastify.register(require('@fastify/swagger'), {
+	swagger: {
+		info: {
+			title: 'Test swagger',
+			description: 'Testing the Fastify swagger API',
+			version: '0.1.0',
+		},
+		externalDocs: {
+			url: 'https://swagger.io',
+			description: 'Find more info here',
+		},
+		host: 'localhost',
+		schemes: ['http'],
+		consumes: ['application/json'],
+		produces: ['application/json'],
+		tags: [
+			{ name: 'user', description: 'User related end-points' },
+			{ name: 'code', description: 'Code related end-points' },
+		],
+		// definitions: {
+		// 	User: {
+		// 		type: 'object',
+		// 		required: ['id', 'email'],
+		// 		properties: {
+		// 			id: { type: 'string', format: 'uuid' },
+		// 			firstName: { type: 'string' },
+		// 			lastName: { type: 'string' },
+		// 			email: { type: 'string', format: 'email' },
+		// 		},
+		// 	},
+		// },
+		// securityDefinitions: {
+		// 	apiKey: {
+		// 		type: 'apiKey',
+		// 		name: 'apiKey',
+		// 		in: 'header',
+		// 	},
+		// },
+	},
 })
 
-fastify.get('/items/:id', (req, res) => {
-	const { id } = req.params
-	const item = items.find(item => item.id === parseInt(id))
-	res.send(item)
-})
+fastify.register(itemRoutes)
 
-const start = async () => {
-	try {
-		await fastify.listen(PORT)
-	} catch (error) {
-		fastify.log.error(error)
+// const start = async () => {
+// 	try {
+// 		await fastify.listen(PORT)
+// 		console.log('Server started...')
+// 	} catch (error) {
+// 		fastify.log.error(error)
+// 		process.exit(1)
+// 	}
+// }
+
+// start()
+
+fastify.listen({ port: PORT }, (err, address) => {
+	if (err) {
+		fastify.log.error(err)
 		process.exit(1)
 	}
-}
+	fastify.log.info(`Server is now listening on ${address}`)
+})
 
-start()
+fastify.ready()
+// fastify.swagger()

@@ -1,5 +1,6 @@
 const itemRoutes = require('./routes/items')
 const fastify = require('fastify')({ logger: true })
+const fp = require('fastify-plugin')
 const PORT = 4000
 
 fastify.register(require('@fastify/swagger'), {
@@ -43,6 +44,24 @@ fastify.register(require('@fastify/swagger'), {
 	},
 })
 
+fastify.register(
+	fp(function pluginA(fastify, options, done) {
+		fastify.decorate('multiply', (a, b) => a * b)
+		console.log(fastify.multiply)
+
+		fastify.register(function pluginChild(fastify, options, done) {
+			console.log(fastify.multiply)
+			done()
+		})
+		done()
+	})
+)
+
+//! Will throw a error
+// fastify.register(function plugnB(fastify,options, done){
+// 	console.log(fastify.multiply)
+// 	done()
+// })
 fastify.register(itemRoutes)
 
 // const start = async () => {
